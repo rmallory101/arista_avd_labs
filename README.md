@@ -280,7 +280,7 @@ INFO[0000] Parsing & checking topology file: topology.yaml
 +----+-------------------------+--------------+-------------------+-------+---------+-------------------+------------------------+
 ```
 
-### 5. Login to a Leaf switch
+### 5. Login to a Leaf Switch 1
 
 ssh admin@172.100.100.4
 PW: admin
@@ -413,7 +413,7 @@ DC1_LEAF1A#
 
 | Lab | Topology |
 | --- | -------- |
-| EVPN Symmetric IRB </br>(eBGP Overlay and eBGP Underlay) </br>(2 Spine + 2 MLAG Leaf Pair + 4 Clients) </br>[`labs/evpn/avd_sym_irb/`] | <img src="images/cdw_arista_iml_1.png" height="300"> |
+| EVPN Asymmetric IRB </br>(eBGP Overlay and eBGP Underlay) </br>(2 Spine + 2 MLAG Leaf Pair + 4 Clients) </br>[`labs/evpn/avd_asym_irb/`] | <img src="images/cdw_arista_iml_1.png" height="300"> |
 
 ## Labs
 
