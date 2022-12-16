@@ -1,0 +1,8 @@
+download_url: https://galaxy.ansible.com/download/arista-eos-6.0.0.tar.gz
+format_version: 1.0.0
+name: eos
+namespace: arista
+server: https://galaxy.ansible.com/api/
+signatures: []
+version: 6.0.0
+version_url: https://galaxy.ansible.com/api/v2/collections/arista/eos/versions/6.0.0/

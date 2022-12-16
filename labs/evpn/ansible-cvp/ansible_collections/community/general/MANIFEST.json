@@ -1,0 +1,30 @@
+{
+ "collection_info": {
+  "namespace": "community",
+  "name": "general",
+  "version": "6.0.0",
+  "authors": [
+   "Ansible (https://github.com/ansible)"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "community"
+  ],
+  "description": null,
+  "license": [],
+  "license_file": "COPYING",
+  "dependencies": {},
+  "repository": "https://github.com/ansible-collections/community.general",
+  "documentation": "https://docs.ansible.com/ansible/latest/collections/community/general/",
+  "homepage": "https://github.com/ansible-collections/community.general",
+  "issues": "https://github.com/ansible-collections/community.general/issues"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "c3a3c6190a0da20ea8ed3d90cc6f3614379471ab18f4db4eecd7c8e73d6ad117",
+  "format": 1
+ },
+ "format": 1
+}

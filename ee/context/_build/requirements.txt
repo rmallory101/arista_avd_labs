@@ -1,0 +1,11 @@
+ansible=>=2.9.6
+deepmerge
+netaddr
+Jinja2
+treelib
+cvprac
+paramiko
+jsonschema
+requests
+PyYAML
+md-toc

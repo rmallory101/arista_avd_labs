@@ -1,0 +1,20 @@
+---
+ansible-navigator:
+  ansible:
+    inventory:
+      entries:
+      - inventory.yaml
+  execution-environment:
+    container-engine: docker
+    enabled: true
+    image: arista_avd_ee
+    pull:
+      policy: missing
+    container-options:
+       - "--network=ceos_clab"
+#       - "--ip=172.100.100.51"
+  mode: stdout
+  playbook-artifact:
+    enable: false
+
+# docker run -it --rm --network=ceos_clab --ip=172.100.100.50 --entrypoint bash arista_avd_ee
