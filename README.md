@@ -68,9 +68,8 @@ remote: Total 309 (delta 169), reused 250 (delta 121), pack-reused 0
 Receiving objects: 100% (309/309), 4.57 MiB | 21.15 MiB/s, done.
 Resolving deltas: 100% (169/169), done.
 ```
-###################
 
-### 5. Change to the cEOS lab directory
+### 5. Move into the cEOS lab directory
 ```shell
 $ cd avd-cEOS-Lab/
 ```
@@ -122,7 +121,7 @@ avd_asym_irb
 └── topology.yaml
 ```
 
-### 2. Take a look at the containerlab topology.yaml file
+### 2. Review the containerlab topology.yaml file
 
 ```shell
 [ansible_automation@arista-jumpbox avd_asym_irb]$ cat topology.yaml 
@@ -433,7 +432,7 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 
 ### Lab1 Topology
 
-| Lab | Topology |
+| Lab1 | Topology |
 | --- | -------- |
 | EVPN Asymmetric IRB </br>(eBGP Overlay and eBGP Underlay) </br>(2 Spine + 2 MLAG Leaf Pair + 4 Clients) </br>[`labs/evpn/avd_asym_irb/`] | <img src="images/cdw_arista_iml_1.png" height="300"> |
 
