@@ -3,17 +3,20 @@
 ![lab-version](https://img.shields.io/badge/Arista--IDL-1.00-brightgreen)
 ![cEOS-AVD](https://img.shields.io/badge/AVD-CEOS-brightgreen)
 
-- [Setup](#lab-setup-process)
-- [Lab Setup](#setup)
-    - [Requirements](#requirements)
+- [Requirements](#requirements)
+- [Lab Setup](#lab-setup)
 - [Installation](#installation)
-- [Lab Guide](#lab-guide)
+    - [Containerlab](#1-containerlab-installation)
+    - [Clone Github Repo](#4-clone-the-arista-avd-github-repository-notechange-to-clone-the-cdw-immersion-day)
+- [Lab Pre Tasks](#lab-guide)
     - [Overview](#overview)
-- [Review Files](#1-review-the-lab-files-and-directory-structure-for-the-avd_asym_irb-lab)
-
-
-
-## Lab Setup Process
+    - [Review Files](#1-review-the-lab-files-and-directory-structure-for-the-avd_asym_irb-lab)
+    - [Deploy the Lab](#3-next-we-will-build-out-the-network-using-containerlab)
+    - [Deploy Configurations](#6-build-the-detailed-spineleaf-configurations)
+    - [Configure Alpine Hosts](#9-configure-the-alpine-linux-network-interfaces)
+- [Labs](#labs)
+    - [Lab 1 Topology](#lab-topology)
+    - [Lab 1 - Asymmetric IRB EVPN w/BGP Underlay and Overlay](#lab-1---verify-irb-and-bgp-operations)
 
 ### Requirements
 
@@ -26,10 +29,12 @@
 - Arista cEOS-Lab image (4.21.8M or above)
 - Alpine-host image
 
+## Lab Setup
+
 ### Installation
 
 ### 1. Containerlab Installation
-Download and install the latest release
+Download and install the latest Containerlab release
 
 ```shell
 bash -c "$(curl -sL https://get.containerlab.dev)"
@@ -51,9 +56,9 @@ $ containerlab version
      source: https://github.com/srl-labs/containerlab
  rel. notes: https://containerlab.dev/rn/0.32/#0323
 ```
-### 4. Clone the Arista AVD Github Repository (Change to clone the CDW Immersion Day )
+### 4. Clone CDW Arista/Ansible Immersion Day Git Repo (Note:change the link to CDW repo )
 ```shell
-$ git clone https://github.com/arista-netdevops-community/avd-cEOS-Lab.git
+$ git clone https://github.com/rmallory101/arista_avd_labs
 NOTE: Change this to the immersion day repo
 Cloning into 'avd-cEOS-Lab'...
 remote: Enumerating objects: 309, done.
@@ -85,16 +90,16 @@ arista_avd_ee                     latest               f88f449637db   4 hours ag
 This repository contains ansible playbooks which allow the user to quickly:
 
 1. Deploy cEOS-Lab Leaf Spine topology using [containerlab](https://containerlab.dev/).
-2. Configure the Leaf Spine Fabric using Arista Ansible [AVD](https://avd.sh/en/latest/)
-3. Build linux interface bundles
+2. Configure a Leaf Spine Fabric using Arista and Ansible [AVD](https://avd.sh/en/latest/)
+3. Build Linux client PC interface bundles
 
-The same AVD templates can also be used with vEOS-Lab and physical Lab switches with slight changes to lab files.
+Note: The same AVD templates can also be used with vEOS-Lab and physical Lab switches with slight changes to lab files.
 
-The assumptions are that the Arista EVPN Spine/Leaf Immersion day GIT repo has been cloned and docker images are available.
+The assumptions are that the Arista EVPN Spine/Leaf Immersion day GIT repo has been cloned and docker images are available prior to preforming the lab pre-tasks.
 
 ### Preform Lab Pre-Tasks
 
-### 1. Review the lab files and directory structure for the avd_asym_irb lab
+### 1. Review the cloned lab files and directory structure for the avd_asym_irb lab
 
 cd arista_immersion_day_labs/labs/evpn/avd_asym_irb
 
@@ -198,7 +203,7 @@ mgmt:
   ipv6_subnet: 2001:172:100:100::/80
 ```
 
-### 3. Next we will build out the network using containerlab
+### 3. Next we will build out the network using Containerlab
 ```shell
 $ sudo containerlab deploy -t topology.yaml
 INFO[0000] Containerlab v0.32.3 started                 
@@ -259,7 +264,7 @@ INFO[0430] Adding containerlab host entries to /etc/hosts file
 +----+-------------------------+--------------+-------------------+-------+---------+-------------------+------------------------+
 ```
 
-### 4. View the inventory list and IP address information
+### 4. Using Containerlab view the lab network inventory list and IP address information
 
 ```shell
 $ sudo containerlab inspect -t topology.yaml
@@ -280,7 +285,7 @@ INFO[0000] Parsing & checking topology file: topology.yaml
 +----+-------------------------+--------------+-------------------+-------+---------+-------------------+------------------------+
 ```
 
-### 5. Login to a Leaf Switch 1
+### 5. Login to a Leaf switch and review the initial configuration. Currently the switches have a limited configuration with management IP addressing, API, and username/password.
 
 ssh admin@172.100.100.4
 PW: admin
@@ -303,7 +308,9 @@ interface Management0
 ```
 
 
-### 6. Build the detailed spine/leaf configurations
+### 6. Build the detailed spine/leaf configurations.
+
+Using an Ansible Playbook, "fabric-deploy-config.yaml' we will build and deploy the final configurations for the Arista Leaf/Spine lab.
 
 ```shell
 [ansible_automation@arista-jumpbox avd_asym_irb]$ ansible-navigator run playbooks/fabric-deploy-config.yaml
@@ -328,6 +335,9 @@ DC1_SPINE2                 : ok=6    changed=5    unreachable=0    failed=0    s
 ```
 
 ### 7. Verify the Fabric. You should see BGP peers from the spine
+
+By logging into one of the network spines you should see the connect EBGP peers (Leaf Switches)
+
 ```shell
 $ ssh admin@172.100.100.2
 Password: 
@@ -344,6 +354,9 @@ Neighbor Status Codes: m - Under maintenance
 ```
 
 ### 8. Verify VXLAN and EVPN MAC Learning
+
+By logging into one of the leaf switches you will be able to view the VXLAN status. Note the VLAN to VXLAN mapping in the output below. Also take a look at the source interface. We will discuss this in a future section.
+
 ```shell
 [ansible_automation@arista-jumpbox avd_asym_irb]$ ssh admin@172.100.100.4
 DC1_LEAF1A#show interfaces vxlan 1
@@ -365,7 +378,36 @@ Vxlan1 is up, line protocol is up (connected)
    111 192.168.254.5  
   MLAG Shared Router MAC is 021c.7337.d84b
 ```
+
+### 8. Verify BGP Peering from a leaf switch.
+
+Note that there are three peers for the IPv4 BGP address family and only two peers for the EVPN BGP address family.
+What are the purposes of the extra IPv4 BGP Peer?
+
+<< Output Ommited >>
+```shell
+DC1_LEAF1A#show ip bgp summary 
+BGP summary information for VRF default
+Router identifier 192.168.255.3, local AS number 65101
+Neighbor Status Codes: m - Under maintenance
+  Description              Neighbor     V AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
+  DC1_LEAF1B               10.255.251.1 4 65101           1757      1753    0    0    1d00h Estab   7      7
+  DC1_SPINE1_Ethernet1     172.31.255.0 4 65001           1754      1754    0    0    1d00h Estab   4      4
+  DC1_SPINE2_Ethernet1     172.31.255.2 4 65001           1760      1757    0    0    1d00h Estab   4      4
+  
+DC1_LEAF1A#show bgp evpn summary 
+BGP summary information for VRF default
+Router identifier 192.168.255.3, local AS number 65101
+Neighbor Status Codes: m - Under maintenance
+  Description              Neighbor      V AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
+  DC1_SPINE1               192.168.255.1 4 65001           1999      1912    0    0    1d00h Estab   8      8
+  DC1_SPINE2               192.168.255.2 4 65001           1990      1950    0    0    1d00h Estab   8      8
+DC1_LEAF1A#
+```
+
 ### 9. Configure the Alpine Linux Network Interfaces
+This script will configure the Alpine Linux client with teamed interfaces. This is will allow the use of the MLAG configured on each leaf switch pair.
+
 ```shell
 cd host_l3_config/
 chmod +x l3_build.sh
@@ -389,27 +431,7 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 172.100.100.0   0.0.0.0         255.255.255.0   U     0      0        0 eth0
 ```
 
-<< Output Ommited >>
-```shell
-DC1_LEAF1A#show ip bgp summary 
-BGP summary information for VRF default
-Router identifier 192.168.255.3, local AS number 65101
-Neighbor Status Codes: m - Under maintenance
-  Description              Neighbor     V AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
-  DC1_LEAF1B               10.255.251.1 4 65101           1757      1753    0    0    1d00h Estab   7      7
-  DC1_SPINE1_Ethernet1     172.31.255.0 4 65001           1754      1754    0    0    1d00h Estab   4      4
-  DC1_SPINE2_Ethernet1     172.31.255.2 4 65001           1760      1757    0    0    1d00h Estab   4      4
-  
-DC1_LEAF1A#show bgp evpn summary 
-BGP summary information for VRF default
-Router identifier 192.168.255.3, local AS number 65101
-Neighbor Status Codes: m - Under maintenance
-  Description              Neighbor      V AS           MsgRcvd   MsgSent  InQ OutQ  Up/Down State   PfxRcd PfxAcc
-  DC1_SPINE1               192.168.255.1 4 65001           1999      1912    0    0    1d00h Estab   8      8
-  DC1_SPINE2               192.168.255.2 4 65001           1990      1950    0    0    1d00h Estab   8      8
-DC1_LEAF1A#
-```
-### Lab Topology
+### Lab1 Topology
 
 | Lab | Topology |
 | --- | -------- |
@@ -454,6 +476,8 @@ team0.110 Link encap:Ethernet  HWaddr AA:C1:AB:5A:3B:C9
 ```
 
 #### Task 1D. Login to Leaf1A and view the evpn vni tables
+
+Remember the VLAN to VXLAN mapping we observed previously? You should see the MAC addresses of two clients mapped to the correct VNI.
 
 ```shell
 DC1_LEAF1A#show bgp evpn vni 10110
@@ -504,7 +528,7 @@ AS Path Attributes: Or-ID - Originator ID, C-LST - Cluster List, LL Nexthop - Li
                                  192.168.254.5         -       100     0       65001 65102 i
 ```
 
-Questions:
+Lab 1 Discussion:
 1. What is the purpose of the 192.168.255.3 IP address on Leaf1A?
 2. What is the 192.168.255.3 IP addresss actually assigned to?
 3. What is the purpose of the Loopback1 interface on each leaf switch?
