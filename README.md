@@ -41,8 +41,9 @@ bash -c "$(curl -sL https://get.containerlab.dev)"
 ```
 ### 2. Verify Containerlab Installation
 
+**$ containerlab version**
 ```shell
-$ containerlab version
+
                _                   _       _     
                  _        (_)                 | |     | |    
  ____ ___  ____ | |_  ____ _ ____   ____  ____| | ____| | _  
@@ -57,8 +58,9 @@ $ containerlab version
  rel. notes: https://containerlab.dev/rn/0.32/#0323
 ```
 ### 4. Clone CDW Arista/Ansible Immersion Day Git Repo (Note:change the link to CDW repo )
+**$ git clone https://github.com/rmallory101/arista_avd_labs**
+
 ```shell
-$ git clone https://github.com/rmallory101/arista_avd_labs
 NOTE: Change this to the immersion day repo
 Cloning into 'avd-cEOS-Lab'...
 remote: Enumerating objects: 309, done.
@@ -100,10 +102,10 @@ The assumptions are that the Arista EVPN Spine/Leaf Immersion day GIT repo has b
 
 ### 1. Review the cloned lab files and directory structure for the avd_asym_irb lab
 
-cd arista_immersion_day_labs/labs/evpn/avd_asym_irb
+**$cd labs/evpn/avd_asym_irb/**
+**$ tree**
 
 ```shell
-$ tree avd_asym_irb
 avd_asym_irb
 ├── ansible.cfg
 ├── group_vars
@@ -122,9 +124,8 @@ avd_asym_irb
 ```
 
 ### 2. Review the containerlab topology.yaml file
-
+**$ cat topology.yaml**
 ```shell
-[ansible_automation@arista-jumpbox avd_asym_irb]$ cat topology.yaml 
 name: avdasymirb
 
 topology:
@@ -202,9 +203,9 @@ mgmt:
   ipv6_subnet: 2001:172:100:100::/80
 ```
 
-### 3. Next we will build out the network using Containerlab
+### 3. Next we will build out and deploy the network using Containerlab
+**$ sudo containerlab deploy -t topology.yaml**
 ```shell
-$ sudo containerlab deploy -t topology.yaml
 INFO[0000] Containerlab v0.32.3 started                 
 INFO[0000] Parsing & checking topology file: topology.yaml 
 INFO[0000] Creating lab directory: /home/ansible_automation/ansible/avd-cEOS-Lab/labs/evpn/avd_asym_irb/clab-avdasymirb 
@@ -265,8 +266,8 @@ INFO[0430] Adding containerlab host entries to /etc/hosts file
 
 ### 4. Using Containerlab view the lab network inventory list and IP address information
 
+**$ sudo containerlab inspect -t topology.yaml**
 ```shell
-$ sudo containerlab inspect -t topology.yaml
 INFO[0000] Parsing & checking topology file: topology.yaml 
 +----+-------------------------+--------------+-------------------+-------+---------+-------------------+------------------------+
 | #  |          Name           | Container ID |       Image       | Kind  |  State  |   IPv4 Address    |      IPv6 Address      |
@@ -311,8 +312,8 @@ interface Management0
 
 Using an Ansible Playbook, "fabric-deploy-config.yaml' we will build and deploy the final configurations for the Arista Leaf/Spine lab.
 
+**$ ansible-navigator run playbooks/fabric-deploy-config.yaml**
 ```shell
-[ansible_automation@arista-jumpbox avd_asym_irb]$ ansible-navigator run playbooks/fabric-deploy-config.yaml
 
 PLAY [Build cEOS EVPN Asymmetric IRB Fabric (eBGP Overlay and eBGP Underlay)] ************************************************************
 
