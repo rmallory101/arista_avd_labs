@@ -1,0 +1,26 @@
+all:
+  children:
+    ceos:
+      hosts:
+        clab-avdasymirb-leaf1a:
+          ansible_host: 172.100.100.4
+        clab-avdasymirb-leaf1b:
+          ansible_host: 172.100.100.5
+        clab-avdasymirb-leaf2a:
+          ansible_host: 172.100.100.6
+        clab-avdasymirb-leaf2b:
+          ansible_host: 172.100.100.7
+        clab-avdasymirb-spine1:
+          ansible_host: 172.100.100.2
+        clab-avdasymirb-spine2:
+          ansible_host: 172.100.100.3
+    linux:
+      hosts:
+        clab-avdasymirb-client1:
+          ansible_host: 172.100.100.8
+        clab-avdasymirb-client2:
+          ansible_host: 172.100.100.9
+        clab-avdasymirb-client3:
+          ansible_host: 172.100.100.10
+        clab-avdasymirb-client4:
+          ansible_host: 172.100.100.11
